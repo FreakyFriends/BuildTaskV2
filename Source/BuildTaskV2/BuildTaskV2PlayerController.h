@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework\MovementComponent.h"
+#include "BoxV2.h"
 #include "BuildTaskV2PlayerController.generated.h"
 
 UCLASS()
@@ -14,15 +15,9 @@ class ABuildTaskV2PlayerController : public APlayerController
 
 public:
 	ABuildTaskV2PlayerController();
-	/* FreakyFriends */
-	UFUNCTION()
-	void BuildingIsFinishedOrCanceled();
-	/**/
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
-	bool bBuildProcessRequested = false;
-	bool bIsAlreadySpawning = false;
 	bool bSpawnBuilding = false;
 
 	// Begin PlayerController interface
@@ -48,21 +43,8 @@ protected:
 	/* FreakyFriends */
 	void OnStartBuildProcessPressed();
 	void OnStartBuildProcessReleased();
-	UFUNCTION()
-	void StartBuildProcess();
-	UFUNCTION()
-	void DisableControls();
-	UFUNCTION()
-	void HideBuilder(ABuildTaskV2Character* MyChar);
-	UFUNCTION()
-	void DisableCollisions(ABuildTaskV2Character* MyChar);
 
-	UFUNCTION()
-	void EnableCollisions(ABuildTaskV2Character* MyChar);
-	UFUNCTION()
-	void ShowBuilder(ABuildTaskV2Character* MyChar);
-	UFUNCTION()
-	void EnableControls();
+	class ABoxV2* SpawnedActorRef = nullptr;
 	/**/
 };
 

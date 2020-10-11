@@ -52,7 +52,7 @@ void ABuildTaskV2PlayerController::OnResetVR()
 void ABuildTaskV2PlayerController::MoveToMouseCursor()
 {
 	/* FreakyFriends */
-	if(!bIsAlreadySpawning && bSpawnBuilding)
+	if( bSpawnBuilding )
 	{
 		if (ABuildTaskV2Character* MyPawn = Cast<ABuildTaskV2Character>(GetPawn()))
 		{
@@ -64,10 +64,10 @@ void ABuildTaskV2PlayerController::MoveToMouseCursor()
 				{
 					MyPawn->GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 				}
-				ABoxV2* SpawnedActorRef = MyPawn->SpawnObject(CursorLocation, FRotator{});
-				SpawnedActorRef->MyDelegate.AddDynamic(this, &ABuildTaskV2PlayerController::BuildingIsFinishedOrCanceled);
-				SpawnedActorRef->OverlapDelegate.AddDynamic(this, &ABuildTaskV2PlayerController::StartBuildProcess);
-				bIsAlreadySpawning = true;
+				SpawnedActorRef = MyPawn->SpawnObject(CursorLocation, FRotator{});
+				if( SpawnedActorRef )
+					SpawnedActorRef->AssignBuilder(MyPawn);
+				bSpawnBuilding = false;
 			}
 		}
 	}
@@ -141,78 +141,11 @@ void ABuildTaskV2PlayerController::OnSetDestinationReleased()
 void ABuildTaskV2PlayerController::OnStartBuildProcessPressed() 
 {
 	bMoveToMouseCursor = true;
-	bIsAlreadySpawning = false;
 	bSpawnBuilding = true;
 }
 
 void ABuildTaskV2PlayerController::OnStartBuildProcessReleased() 
 {
 	bMoveToMouseCursor = false;
-}
-
-void ABuildTaskV2PlayerController::StartBuildProcess() 
-{
-	UE_LOG(LogTemp, Warning, TEXT("NOW I SHOULD START BUILD PROCESS") );
-	ABuildTaskV2Character* MyChar = Cast<ABuildTaskV2Character>(GetPawn());	
-	if( MyChar )
-	{
-		DisableControls();
-		HideBuilder(MyChar);
-		DisableCollisions(MyChar);
-	}
-}
-
-void ABuildTaskV2PlayerController::DisableControls() 
-{
-	this->DisableInput(this);
-}
-
-void ABuildTaskV2PlayerController::HideBuilder(ABuildTaskV2Character* MyChar) 
-{
-	if(MyChar)
-	{
-		MyChar->SetActorHiddenInGame(true);
-	}
-}
-
-void ABuildTaskV2PlayerController::DisableCollisions(ABuildTaskV2Character* MyChar) 
-{
-	if(MyChar)
-	{
-		MyChar->SetActorEnableCollision(false);
-	}
-}
-
-void ABuildTaskV2PlayerController::BuildingIsFinishedOrCanceled() 
-{
-	ABuildTaskV2Character* MyChar = Cast<ABuildTaskV2Character>(GetPawn());	
-	if( MyChar )
-	{
-		ShowBuilder(MyChar);
-		EnableCollisions(MyChar);
-		EnableControls();
-	}
-}
-
-void ABuildTaskV2PlayerController::EnableCollisions(ABuildTaskV2Character* MyChar) 
-{
-	if(MyChar)
-	{
-		MyChar->SetActorEnableCollision(true);
-	}
-}
-
-void ABuildTaskV2PlayerController::ShowBuilder(ABuildTaskV2Character* MyChar) 
-{
-	UE_LOG(LogTemp, Warning, TEXT("IM IN SHOW BUILDER") );	
-	if(MyChar)
-	{
-		MyChar->SetActorHiddenInGame(false);
-	}
-}
-
-void ABuildTaskV2PlayerController::EnableControls() 
-{
-	this->EnableInput(this);
 }
 /**/

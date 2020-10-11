@@ -44,18 +44,74 @@ void ABoxV2::Tick(float DeltaTime)
 void ABoxV2::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) 
 {
 	ABuildTaskV2Character* Char = Cast<ABuildTaskV2Character>(OtherActor);
-	if( (Char != nullptr) && (!bImAlreadyBuilt) )
+	if( Char && !bImAlreadyBuilt )
 	{
-		UE_LOG(LogTemp, Warning, TEXT("IM IN OVERLAP") );	
-		OverlapDelegate.Broadcast();
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ABoxV2::BuildingFinished, 5.0f, false);
+		StartBuildProcess();
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ABoxV2::BuildingIsFinishedOrCanceled, 5.0f, false);
 		bImAlreadyBuilt = true;
 	}
 }
 
-void ABoxV2::BuildingFinished() 
+void ABoxV2::AssignBuilder(ABuildTaskV2Character* Character) 
 {
-	UE_LOG(LogTemp, Warning, TEXT("I FINISHED BUILDING") );	
-	MyDelegate.Broadcast();
+	Builder = Character;
+}
+
+void ABoxV2::StartBuildProcess() 
+{
+	DisableControls();
+	HideBuilder();
+	DisableCollisions();
+}
+
+void ABoxV2::DisableControls() 
+{
+	if( Builder )
+	{
+		APlayerController* BuilderController = Cast<APlayerController>(Builder->GetController());
+		if( BuilderController )
+			BuilderController->DisableInput(BuilderController);
+	}
+}
+
+void ABoxV2::HideBuilder() 
+{
+	if( Builder )
+		Builder->SetActorHiddenInGame(true);
+}
+
+void ABoxV2::DisableCollisions() 
+{
+	if( Builder )
+		Builder->SetActorEnableCollision(false);
+}
+
+void ABoxV2::BuildingIsFinishedOrCanceled() 
+{
+	EnableCollisions();
+	ShowBuilder();
+	EnableControls();
+}
+
+void ABoxV2::EnableCollisions() 
+{
+	if( Builder )
+		Builder->SetActorEnableCollision(true);
+}
+
+void ABoxV2::ShowBuilder() 
+{
+	if( Builder )
+		Builder->SetActorHiddenInGame(false);
+}
+
+void ABoxV2::EnableControls() 
+{
+	if( Builder )
+	{
+		APlayerController* BuilderController = Cast<APlayerController>(Builder->GetController());
+		if( BuilderController )
+			BuilderController->EnableInput(BuilderController);
+	}
 }
 /**/

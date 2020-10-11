@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components\BoxComponent.h"
 #include "BuildTaskV2Character.h"
-#include "BuildTaskV2PlayerController.h"
+// #include "BuildTaskV2PlayerController.h"
 #include "BoxV2.generated.h"
 
 UCLASS()
@@ -42,15 +42,19 @@ public:
 
 	FTimerHandle TimerHandle;
 
-	void BuildingFinished();
-
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBuildingFinishedOrCanceledDelegate);
-	FBuildingFinishedOrCanceledDelegate MyDelegate;
-
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharAndBoxOverlap);
-	FCharAndBoxOverlap OverlapDelegate;
-
 	bool bImAlreadyBuilt = false;
 
+	class ABuildTaskV2Character* Builder = nullptr;
+	void AssignBuilder(ABuildTaskV2Character* Builder);
+
+	void StartBuildProcess();
+	void DisableControls();
+	void HideBuilder();
+	void DisableCollisions();
+
+	void BuildingIsFinishedOrCanceled();
+	void EnableCollisions();
+	void ShowBuilder();
+	void EnableControls();
 };
 /**/

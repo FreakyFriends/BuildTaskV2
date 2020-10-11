@@ -91,7 +91,6 @@ void ABuildTaskV2Character::Tick(float DeltaSeconds)
 /* FreakyFriends */
 ABoxV2* ABuildTaskV2Character::SpawnObject(FVector Loc, FRotator Rot) 
 {
-	UE_LOG(LogTemp, Warning, TEXT("NOW I SHOULD SPAWN OBJECT") );
 	FActorSpawnParameters SpawnParams;
 	ABoxV2* SpawnedActorRef = GetWorld()->SpawnActor<ABoxV2>(Loc, Rot, SpawnParams);
 	return SpawnedActorRef;

@@ -47,5 +47,3 @@ protected:
 	class ABoxV2* SpawnedActorRef = nullptr;
 	/**/
 };
-
-

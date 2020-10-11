@@ -6,7 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "Components\BoxComponent.h"
 #include "BuildTaskV2Character.h"
-// #include "BuildTaskV2PlayerController.h"
 #include "BoxV2.generated.h"
 
 UCLASS()
